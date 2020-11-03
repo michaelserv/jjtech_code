@@ -1,0 +1,9 @@
+{
+    "detail": {
+      "check-name": "Amazon EBS Snapshots",
+      "check-item-detail": {
+        "Volume ID": "<replace with your Volume ID>",
+        "Region": "<replace with the Volume's region (e.g. us-east-1)"
+      }
+    }
+  }
