@@ -1,0 +1,183 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "",
+    "Metadata": {
+
+    },
+    "Parameters": {
+      "jjtechvpccdr": {
+          "Description": "Provide cidr for jjtechvpc",
+          "Type": "String"
+      },
+      "snjjechcdrpriv": {
+          "Description": "Provide cidr for Snjjtechvpcpriv",
+          "Type": "String"
+      },
+      "snjjechAz": {
+          "Description": "Provide Az for snjjechAz",
+          "Type": "AWS::EC2::AvailabilityZone::Name"
+      },
+      "Snjjtechvpcpubcdr": {
+          "Description": "Provide cidr for Snjjtechvpcpubcdr",
+          "Type": "String"
+      },
+      "jjtechvpcAzpub": {
+          "Description": "Provide Az for jjtechvpcAzpub",
+          "Type": "AWS::EC2::AvailabilityZone::Name"
+      },
+      "jjtechroute": {
+          "Description": "Provide route for jjtechroute",
+          "Type": "String"
+      },
+      "jjtechkey": {
+          "Description": "provide key name for jjtechvpc",
+          "Type": "AWS::EC2::KeyPair::KeyName"
+      },
+      "jjtechinst": {
+          "Description": "provide instance type for jjtechinst",
+          "Type": "String"
+      },
+      "imageid": {
+          "Description": "provide imageid for jjtechvpc",
+          "Type": "AWS::EC2::Image::Id"
+      },
+      "sgcdrip": {
+          "Description": "provide my securitycidr ip",
+          "Type": "String"
+      }
+
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+      "jjtechvpc": {
+        "Type": "AWS::EC2::VPC",
+        "Properties": {
+          "CidrBlock": { "Ref": "jjtechvpccdr" },
+          "Tags": [{ "Key": "Name", "Value":  "jjtechvpc" }]
+        }
+      },
+      "Snjjtechvpcpriv": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+          "AvailabilityZone": { "Ref": "snjjechAz" },
+          "VpcId": { "Ref": "jjtechvpc" },
+          "CidrBlock": { "Ref": "snjjechcdrpriv" },
+          "Tags": [{ "Key": "Name", "Value":  "Snjjtechvpcpriv" }]
+        }
+      },
+      "Snjjtechvpcpub": {
+        "Type": "AWS::EC2::Subnet",
+        "Properties": {
+            "MapPublicIpOnLaunch" : true,
+          "AvailabilityZone": { "Ref": "jjtechvpcAzpub" },
+          "VpcId": { "Ref": "jjtechvpc" },
+          "CidrBlock": { "Ref": "Snjjtechvpcpubcdr" },
+          "Tags": [{ "Key": "Name", "Value":  "Snjjtechvpcpub" }]
+        }
+
+      },
+      "Rtjjtechvpcpriv": {
+        "Type": "AWS::EC2::RouteTable",
+        "Properties": {
+          "VpcId": { "Ref": "jjtechvpc" },
+          "Tags": [{ "Key": "Name", "Value":  "Rtjjtechvpcpriv" }]
+        }
+
+      },
+      "Rtjjtechvpcpub": {
+        "Type": "AWS::EC2::RouteTable",
+        "Properties": {
+          "VpcId": { "Ref": "jjtechvpc" },
+          "Tags": [{ "Key": "Name", "Value":  "Rtjjtechvpcpub" }]
+        }
+
+      },
+      "RtAssjjtechvpcpriv": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId": { "Ref": "Snjjtechvpcpriv" },
+          "RouteTableId": { "Ref": "Rtjjtechvpcpriv" }
+        }
+      },
+      "RtAssjjtechvpcpub": {
+        "Type": "AWS::EC2::SubnetRouteTableAssociation",
+        "Properties": {
+          "SubnetId": { "Ref": "Snjjtechvpcpub" },
+          "RouteTableId": { "Ref": "Rtjjtechvpcpub" }
+        }
+      },
+"igwjjtech": {
+  "Type": "AWS::EC2::InternetGateway",
+  "Properties": {
+    "Tags": [{ "Key": "Name", "Value":  "igwjjtech" }]
+  }
+},
+"AttachGateway": {
+  "Type": "AWS::EC2::VPCGatewayAttachment",
+  "Properties": {
+    "VpcId": { "Ref": "jjtechvpc" },
+    "InternetGatewayId": { "Ref": "igwjjtech" }
+  }
+},
+"jjtechR": {
+  "Type": "AWS::EC2::Route",
+  "Properties": {
+    "RouteTableId": { "Ref": "Rtjjtechvpcpub" },
+    "DestinationCidrBlock": { "Ref": "jjtechroute" },
+    "GatewayId": { "Ref": "igwjjtech" }
+  }
+},
+"jjtechsg" : {
+  "Type" : "AWS::EC2::SecurityGroup",
+  "Properties" : {
+     "GroupName" : "jjtechsg",
+    "GroupDescription" : "SG provide for jjtechsg",
+    "SecurityGroupIngress" : [{
+         "IpProtocol" : "tcp",
+         "FromPort" : 22,
+         "ToPort" : 22,
+         "CidrIp" : { "Ref": "sgcdrip" }
+      }],
+    "VpcId" : { "Ref": "jjtechvpc" },
+    "Tags" :  [{ "Key": "Name", "Value":  "jjtechsg" }]
+  }
+},
+"jjtechec2": {
+    "Type": "AWS::EC2::Instance",
+    "Properties": {
+        "KeyName": { "Ref": "jjtechkey" },
+         "SubnetId" : { "Ref": "Snjjtechvpcpub" },
+        "ImageId": { "Ref": "imageid" },
+        "InstanceType": { "Ref": "jjtechinst" },
+        "Monitoring": "false",
+        "SecurityGroupIds" : [{ "Ref": "jjtechsg" }],
+        "Tags": [
+            {
+                "Key": "Name",
+                "Value": "jjtechec2"
+            }
+        ],
+        "UserData": {
+            "Fn::Base64": {
+                "Fn::Join": [
+                    "",
+                    [
+                        "#!/bin/bash -ex",
+                        "-"
+                    ]
+                ]
+            }
+        }
+}
+        }
+
+    },
+    "Outputs": {
+
+    }
+}
