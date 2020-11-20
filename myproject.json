@@ -39,7 +39,7 @@
       },
       "imageid": {
           "Description": "provide imageid for jjtechvpc",
-          "Type": "AWS::EC2::Image::Id"
+          "Type": "String"
       },
       "sgcdrip": {
           "Description": "provide my securitycidr ip",
