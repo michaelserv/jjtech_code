@@ -1,0 +1,1 @@
+aws cloudformation create-stack --stack-name FB-Test2 --template-body file://GISIQ_DR.json --parameters file://GISIQ_DR_Parameter.json
