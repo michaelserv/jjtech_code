@@ -39,6 +39,10 @@
     "WebserverAMIID": {
       "Description": "Add AMI for webserver",
       "Type": "String"
+    },
+    "WebserverInstanceTypea": {
+        "Description": "choose instance type",
+        "Type": "String"
     }
   },
   "Mappings": {},
@@ -293,7 +297,7 @@
           "Ref": "WebserverAMIID"
         },
         "InstanceType": {
-          "Ref": "WebserverInstanceType"
+          "Ref": "WebserverInstanceTypea"
         },
         "Monitoring": "false",
         "SecurityGroupIds": [

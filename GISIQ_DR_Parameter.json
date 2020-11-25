@@ -30,6 +30,9 @@
   {
     "ParameterKey": "WebserverAMIID",
     "ParameterValue": "ami-04bf6dcdc9ab498ca"
+  },
+  {
+    "ParameterKey": "WebserverInstanceTypea",
+    "ParameterValue": "t2.small"
   }
-
 ]
