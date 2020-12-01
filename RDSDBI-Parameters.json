@@ -1,0 +1,38 @@
+[
+   {
+    "ParameterKey": "AlloStorage",
+    "ParameterValue": "100"
+   },
+   {
+    "ParameterKey": "DBIClass",
+    "ParameterValue": "db.t2.micro"
+   },
+   {
+    "ParameterKey": "DBIAZ",
+    "ParameterValue": "us-east-1a"
+   },
+   {
+    "ParameterKey": "BRPeriod",
+    "ParameterValue": "0"
+   },
+  {
+    "ParameterKey": "DB1Name",
+    "ParameterValue" : "nmdb1exp"
+  },
+  {
+    "ParameterKey": "DB2Name",
+    "ParameterValue" : "nmdb2exp"
+  },
+  {
+    "ParameterKey": "DBSubnetGN",
+    "ParameterValue" : "nmdbexpsng"
+  },
+  {
+    "ParameterKey": "MasterUN",
+    "ParameterValue" : "jwnmexp"
+  },
+  {
+    "ParameterKey": "MasterPW",
+    "ParameterValue" : "6000000"
+  }
+]

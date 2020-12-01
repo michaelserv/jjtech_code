@@ -1,0 +1,127 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "Martin - 2 provision RDS DB Instances",
+    "Metadata": {
+
+    },
+    "Parameters": {
+      "AlloStorage": {
+          "Description": "DBI storage size",
+          "Type": "String",
+          "Default": "30"
+      },
+      "DBIClass": {
+          "Description": "DBI class",
+          "Type": "String",
+          "AllowedValues":["db.t2.micro"],
+          "Default": "db.t2.micro"
+      },
+      "DBIAZ": {
+          "Description": "specify AZ",
+          "Type": "AWS::EC2::AvailabilityZone::Name",
+          "Default": "us-east-1a"
+      },
+      "BRPeriod": {
+          "Description": "Specify backup retention period",
+          "Type": "String",
+          "Default": "0"
+      },
+      "DB1Name": {
+          "Description": "specify db name",
+          "Type": "String",
+          "Default": "nmdb1exp"
+      },
+      "DB2Name": {
+          "Description": "specify db name",
+          "Type": "String",
+          "Default": "nmdb2exp"
+      },
+      "DBSubnetGN": {
+          "Description": "DB Subnet Group Name",
+          "Type": "String"
+      },
+      "MasterUN": {
+          "Description": "db user name",
+          "Type": "String",
+          "Default": "jwnmexp"
+      },
+      "MasterPW": {
+          "Description": "db password",
+          "Type": "String"
+      }
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+      "rdsDBInstance1": {
+        "Type": "AWS::RDS::DBInstance",
+        "Properties": {
+          "AllocatedStorage": { "Ref": "AlloStorage" },
+          "DBInstanceClass": { "Ref": "DBIClass" },
+          "AllowMajorVersionUpgrade": "true",
+          "AutoMinorVersionUpgrade": "true",
+          "BackupRetentionPeriod": { "Ref": "BRPeriod" },
+          "DBInstanceIdentifier": { "Ref": "DB1Name" },
+          "DBName":{ "Ref": "DB1Name" },
+          "DBSnapshotIdentifier": "",
+          "DBSubnetGroupName": { "Ref": "DBSubnetGN" },
+          "Engine":"MySQL",
+          "EngineVersion": "8.0",
+          "Iops": "3000",
+          "LicenseModel": "general-public-license",
+          "MasterUsername": { "Ref": "MasterUN" },
+          "MasterUserPassword": { "Ref": "MasterPW" },
+          "MultiAZ": "true",
+          "OptionGroupName": "",
+          "Port": "3306",
+          "PreferredBackupWindow": "",
+          "PreferredMaintenanceWindow": "",
+          "PubliclyAccessible": "false",
+          "SourceDBInstanceIdentifier": "",
+          "StorageEncrypted": "false",
+          "StorageType": "io1",
+          "Tags": [{ "Key": "Name", "Value":  "nmd1bexp" }  ],
+          "VPCSecurityGroups": [{ "Fn::ImportValue": "COREAPPSecurityGroup1" }]
+        }
+      },
+      "rdsDBInstance2": {
+        "Type": "AWS::RDS::DBInstance",
+        "Properties": {
+          "AllocatedStorage": { "Ref": "AlloStorage" },
+          "DBInstanceClass": { "Ref": "DBIClass" },
+          "AllowMajorVersionUpgrade": "true",
+          "AutoMinorVersionUpgrade": "true",
+          "BackupRetentionPeriod": { "Ref": "BRPeriod" },
+          "DBInstanceIdentifier":{ "Ref": "DB2Name" },
+          "DBName":{ "Ref": "DB2Name" },
+          "DBSnapshotIdentifier": "",
+          "DBSubnetGroupName": { "Ref": "DBSubnetGN" },
+          "Engine":"MySQL",
+          "EngineVersion": "8.0",
+          "Iops": "3000",
+          "LicenseModel": "general-public-license",
+          "MasterUsername": { "Ref": "MasterUN" },
+          "MasterUserPassword": { "Ref": "MasterPW" },
+          "MultiAZ": "true",
+          "OptionGroupName": "",
+          "Port": "3306",
+          "PreferredBackupWindow": "",
+          "PreferredMaintenanceWindow": "",
+          "PubliclyAccessible": "false",
+          "SourceDBInstanceIdentifier": "",
+          "StorageEncrypted": "false",
+          "StorageType": "io1",
+          "Tags": [{ "Key": "Name", "Value":  "nmd2bexp" }  ],
+          "VPCSecurityGroups": [{ "Fn::ImportValue": "COREAPPSecurityGroup1" }]
+        }
+      }
+
+    },
+    "Outputs": {
+
+    }
+}
