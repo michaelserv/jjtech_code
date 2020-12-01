@@ -1,0 +1,22 @@
+  [
+           {
+            "ParameterKey": "DBInstanceID",
+            "ParameterValue": "MyDBInstance"
+           },
+           {
+            "ParameterKey": "DBName",
+            "ParameterValue": "MyDB"
+           },
+           {
+            "ParameterKey": "DBInstanceClass",
+            "ParameterValue": "db.m5.large"
+           },
+          {
+            "ParameterKey": "DBAllocatedStorage",
+            "ParameterValue" : "50"
+          },
+        {
+          "ParameterKey": "DBEngine",
+          "ParameterValue" : "mysql"
+        }
+        ]

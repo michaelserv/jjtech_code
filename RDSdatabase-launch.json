@@ -1,0 +1,103 @@
+{
+    "AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "AWS CloudFormation Sample Template for creating and retrieving secrets securely on Amazon RDS DB instance",
+
+    "Parameters": {
+        "DBInstanceID": {
+            "Description": "My database instance",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "63",
+            "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
+
+            "ConstraintDescription": "Must begin with a letter and must not end with a hyphen or contain two consecutive hyphens."
+        },
+        "DBName": {
+            "Description": "My database",
+            "Type": "String",
+            "MinLength": "1",
+            "MaxLength": "64",
+            "AllowedPattern": "[a-zA-Z][a-zA-Z0-9]*",
+
+            "ConstraintDescription": "Must begin with a letter and contain only alphanumeric characters."
+        },
+        "DBInstanceClass": {
+            "Default": "db.m5.large",
+            "Description": "DB instance class",
+            "Type": "String",
+            "ConstraintDescription": "Must select a valid DB instance type."
+        },
+        "DBAllocatedStorage": {
+            "Default": "50",
+            "Description": "The size of the database (GiB)",
+            "Type": "Number",
+            "MinValue": "5",
+            "MaxValue": "1024",
+
+            "ConstraintDescription": "must be between 20 and 65536 GiB."
+        },
+        "DBEngine": {
+            "Description": "Engine type for RDS database",
+            "Type": "String"
+        }
+    },
+    "Resources": {
+          "MyRDSInstanceRotationSecret": {
+              "Type": "AWS::SecretsManager::Secret",
+              "Properties": {
+                  "Description": "This is the secret for MyDB instance",
+                  "GenerateSecretString": {
+                      "SecretStringTemplate": "{\"username\": \"admin\"}",
+                      "GenerateStringKey": "password",
+                      "PasswordLength": 16,
+                      "ExcludeCharacters": "\"@/\\"
+                  }
+              }
+          },
+        "MyDB": {
+            "Type": "AWS::RDS::DBInstance",
+            "Properties": {
+                "DBInstanceIdentifier": {
+                    "Ref": "DBInstanceID"
+                },
+
+                "DBName": {
+                    "Ref": "DBName"
+                },
+                "DBInstanceClass": {
+                    "Ref": "DBInstanceClass"
+                },
+                "AllocatedStorage": {
+                    "Ref": "DBAllocatedStorage"
+                },
+
+                "Engine": { "Ref": "DBEngine" },
+                "MasterUsername": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "{{resolve:secretsmanager:",
+                            {
+                                "Ref": "MyRDSInstanceRotationSecret"
+                            },
+                            ":SecretString:username}}"
+                        ]
+                    ]
+                },
+                "MasterUserPassword": {
+                    "Fn::Join": [
+                        "",
+                        [
+                            "{{resolve:secretsmanager:",
+                            {
+                                "Ref": "MyRDSInstanceRotationSecret"
+                            },
+                            ":SecretString:password}}"
+                        ]
+                    ]
+
+                  }
+            }
+          }
+        }
+      }
